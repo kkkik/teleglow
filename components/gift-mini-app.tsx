@@ -42,7 +42,14 @@ export function GiftMiniApp() {
     if (!tg) return
     setError('')
     try { setData(await call('/api/state', tg.initData)) }
-    catch { setError('We couldn’t reach your gift wallet. Check your connection and try again.') }
+    catch (cause) {
+      const code = cause instanceof Error ? cause.message : ''
+      setError(code === 'backend_not_configured'
+        ? 'Gift service setup is unfinished. Connect the bot backend to load your wallet.'
+        : code === 'backend_unavailable'
+          ? 'The gift service is offline. Please try again shortly.'
+          : 'We couldn’t reach your gift wallet. Check your connection and try again.')
+    }
   }, [tg])
   useEffect(() => { void refresh() }, [refresh])
   useEffect(() => { if (!toast) return; const id = window.setTimeout(() => setToast(''), 2600); return () => clearTimeout(id) }, [toast])

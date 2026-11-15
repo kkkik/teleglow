@@ -1,0 +1,2 @@
+aiohttp>=3.9
+pyTelegramBotAPI>=4.29
